@@ -23,7 +23,7 @@ public class GameScreen implements Screen {
 	final Cosmos game;
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	Texture shipImage;
+	Texture ship1Image;
 	Texture agrImage;
 	Texture bG;
 	Rectangle ship;
@@ -48,9 +48,9 @@ public class GameScreen implements Screen {
 
 		batch = new SpriteBatch();
 
-		shipImage = new Texture("ship.png");
+		ship1Image = new Texture("ship.png");
 		agrImage = new Texture("agr.png");
-		bG = new Texture("bg.png");
+		bG = new Texture("bg.jpg");
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
 
@@ -94,7 +94,8 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 
 		game.batch.draw(bG, camera.position.x - camera.viewportWidth / 2, 0);
-		game.batch.draw(shipImage, ship.x, ship.y);
+		game.batch.draw(ship1Image, ship.x, ship.y);
+
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
 		game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
 		game.font.draw(game.batch, "Rank: " + rank, 20, 740);
@@ -123,13 +124,13 @@ public class GameScreen implements Screen {
 		if (ship.x < 0) ship.x = 0;
 		if (ship.x > 416) ship.x = 480 - 64;
 		if (ship.y < 0) ship.y = 0;
-		if (ship.y > 736) ship.y = 800 - 64;
+		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
-			speedFall = MathUtils.random(100, 400);
+			speedFall = MathUtils.random(0, 400);
 			Rectangle agrFall = iter.next();
 			agrFall.y -= speedFall * Gdx.graphics.getDeltaTime();
 			if (agrFall.y + 64 < 0) {
@@ -195,9 +196,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 
 		agrImage.dispose();
-		shipImage.dispose();
+		ship1Image.dispose();
 		bah.dispose();
-
-
 	}
 }
