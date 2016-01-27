@@ -31,7 +31,6 @@ public class GameScreen implements Screen {
 	Array<Rectangle> agrfalls;
 	long lastFallTime;
 	Sound bah;
-
 	String rank;
 	int bahAgressor;
 	int nobahAgressor;
@@ -140,7 +139,6 @@ public class GameScreen implements Screen {
 			if (agrFall.overlaps(ship)) {
 				bahAgressor++;//счетчик уничтоженных
 				bah.play();
-
 
 				rankMath = bahAgressor - nobahAgressor;
 
