@@ -31,7 +31,7 @@ public class GameScreen implements Screen {
 	Array<Rectangle> agrfalls;
 	long lastFallTime;
 	Sound bah;
-	Sound alarm;
+
 	String rank;
 	int bahAgressor;
 	int nobahAgressor;
@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
 		bG = new Texture("bg.png");
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
-//		alarm = Gdx.audio.newSound(Gdx.files.internal("spacealarm.mp3"));
+
 
 		ship = new Rectangle();
 		ship.x = 480 / 2 - 64 / 2;
@@ -127,52 +127,49 @@ public class GameScreen implements Screen {
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
 
-			Iterator<Rectangle> iter = agrfalls.iterator();
-			while (iter.hasNext()) {
-				Rectangle agrFall = iter.next();
-				agrFall.y -= 200 * Gdx.graphics.getDeltaTime(); //MathUtils.random(150, 400)
-				if (agrFall.y + 64 < 0) {
-					iter.remove();
-					nobahAgressor++; //увеличиваем счетчик пропущенных
-
-					//проверка звания
-					if (rankMath < 5) {
-						rank = "Lieutenant";
-					}
-					if (rankMath >= 5 && rankMath < 10){
-						rank = "Captain";
-					}
-					if (rankMath >= 10){
-						rank = "General";
-					}
-					//alarm.play();
-				}
-
-				if (agrFall.overlaps(ship)) {
-					bahAgressor++;//счетчик уничтоженных
-					bah.play();
-
-					// вычисление звания
-					rankMath = bahAgressor - nobahAgressor;
-					if (rankMath < 5) {
-						rank = "Lieutenant";
-					}
-					if (rankMath >= 5 && rankMath < 10){
-						rank = "Captain";
-					}
-					if (rankMath >= 10){
-						rank = "General";
-					}
-					iter.remove();
-				}
-
+		Iterator<Rectangle> iter = agrfalls.iterator();
+		while (iter.hasNext()) {
+			Rectangle agrFall = iter.next();
+			agrFall.y -= 200 * Gdx.graphics.getDeltaTime();
+			if (agrFall.y + 64 < 0) {
+				iter.remove();
+				nobahAgressor++; //увеличиваем счетчик пропущенных
 
 			}
 
+			if (agrFall.overlaps(ship)) {
+				bahAgressor++;//счетчик уничтоженных
+				bah.play();
 
+
+				rankMath = bahAgressor - nobahAgressor;
+
+				if (rankMath < 5){
+					rank = "Soldier";
+				}
+				if (rankMath >= 5 && rankMath < 10) {
+					rank = "Sergeant";
+				}
+				if (rankMath >= 10 && rankMath < 20) {
+					rank = "Lieutenant";
+				}
+				if (rankMath >= 20 && rankMath < 30) {
+					rank = "Captain";
+				}
+				if (rankMath >= 30 && rankMath < 40) {
+					rank = "Col.";
+				}
+				if (rankMath >= 40 && rankMath < 50) {
+					rank = "General";
+				}
+				if (rankMath >= 50) {
+					rank = "Admiral";
+				}
+				iter.remove();
+			}
 		}
 
-
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -200,7 +197,7 @@ public class GameScreen implements Screen {
 		agrImage.dispose();
 		shipImage.dispose();
 		bah.dispose();
-		alarm.dispose();
+
 
 	}
 }
