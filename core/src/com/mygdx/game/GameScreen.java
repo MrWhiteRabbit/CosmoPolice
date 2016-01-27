@@ -35,6 +35,7 @@ public class GameScreen implements Screen {
 	int bahAgressor;
 	int nobahAgressor;
 	int rankMath;
+	int speedFall;
 
 
 	public GameScreen(final Cosmos gam) {
@@ -128,8 +129,9 @@ public class GameScreen implements Screen {
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
+			speedFall = MathUtils.random(100, 400);
 			Rectangle agrFall = iter.next();
-			agrFall.y -= 200 * Gdx.graphics.getDeltaTime();
+			agrFall.y -= speedFall * Gdx.graphics.getDeltaTime();
 			if (agrFall.y + 64 < 0) {
 				iter.remove();
 				nobahAgressor++; //увеличиваем счетчик пропущенных
