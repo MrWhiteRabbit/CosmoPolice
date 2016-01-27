@@ -32,8 +32,10 @@ public class GameScreen implements Screen {
 	long lastFallTime;
 	Sound bah;
 	Sound alarm;
+	String rank;
 	int bahAgressor;
 	int nobahAgressor;
+	int rankMath;
 
 
 	public GameScreen(final Cosmos gam) {
@@ -95,6 +97,7 @@ public class GameScreen implements Screen {
 		game.batch.draw(shipImage, ship.x, ship.y);
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
 		game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
+		game.font.draw(game.batch, "Rank: " + rank, 20, 740);
 
 		for (Rectangle agrFall : agrfalls) {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
@@ -131,12 +134,35 @@ public class GameScreen implements Screen {
 				if (agrFall.y + 64 < 0) {
 					iter.remove();
 					nobahAgressor++; //увеличиваем счетчик пропущенных
+
+					//проверка звания
+					if (rankMath < 5) {
+						rank = "Lieutenant";
+					}
+					if (rankMath >= 5 && rankMath < 10){
+						rank = "Captain";
+					}
+					if (rankMath >= 10){
+						rank = "General";
+					}
 					//alarm.play();
 				}
 
 				if (agrFall.overlaps(ship)) {
-					bahAgressor++; //счетчик уничтоженных
+					bahAgressor++;//счетчик уничтоженных
 					bah.play();
+
+					// вычисление звания
+					rankMath = bahAgressor - nobahAgressor;
+					if (rankMath < 5) {
+						rank = "Lieutenant";
+					}
+					if (rankMath >= 5 && rankMath < 10){
+						rank = "Captain";
+					}
+					if (rankMath >= 10){
+						rank = "General";
+					}
 					iter.remove();
 				}
 
