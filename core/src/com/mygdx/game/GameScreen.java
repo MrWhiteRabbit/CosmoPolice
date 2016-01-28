@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -58,7 +59,6 @@ public class GameScreen implements Screen {
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
 
-
 		ship = new Rectangle();
 		ship.x = 480 / 2 - 64 / 2;
 		ship.y = 20;
@@ -89,7 +89,7 @@ public class GameScreen implements Screen {
 		shootSh.x = ship.x;
 		shootSh.y = ship.y;
 		shootSh.width = 32;
-		shootSh.height = 10;
+		shootSh.height = 5;
 		shootsSh.add(shootSh);
 		lastShootTime = TimeUtils.nanoTime();
 	}

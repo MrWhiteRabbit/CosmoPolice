@@ -2,23 +2,25 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+//import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 
 public class MainMenuScreen implements Screen{
 
     final Cosmos game;
     OrthographicCamera camera;
+   // Music zast;
 
 
     public MainMenuScreen(final Cosmos gam) {
         game = gam;
 
-
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
+
+       // zast = Gdx.audio.newMusic(Gdx.files.internal("rmhbzas.mp3"));
     }
 
 
@@ -39,7 +41,7 @@ public class MainMenuScreen implements Screen{
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(stScr, camera.position.x - camera.viewportWidth / 2, 0);
-
+       // zast.play();
 
         game.batch.end();
 
@@ -71,6 +73,6 @@ public class MainMenuScreen implements Screen{
 
     @Override
     public void dispose() {
-
+      //  zast.dispose();
     }
 }
