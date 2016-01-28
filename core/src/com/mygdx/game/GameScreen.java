@@ -26,10 +26,13 @@ public class GameScreen implements Screen {
 	Texture ship1Image;
 	Texture agrImage;
 	Texture bG;
+	Texture bullet;
 	Rectangle ship;
 	Vector3 touchPos;
 	Array<Rectangle> agrfalls;
+	Array<Rectangle> shootsSh;
 	long lastFallTime;
+	long lastShootTime;
 	Sound bah;
 	String rank;
 	int bahAgressor;
@@ -51,6 +54,7 @@ public class GameScreen implements Screen {
 		ship1Image = new Texture("ship.png");
 		agrImage = new Texture("agr.png");
 		bG = new Texture("bg.jpg");
+		bullet = new Texture("bullet.png");
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
 
@@ -64,6 +68,9 @@ public class GameScreen implements Screen {
 		agrfalls = new Array<Rectangle>();
 		spawnAgrFall();
 
+		shootsSh = new Array<Rectangle>();
+		spawnShootSh();
+
 
 	}
 
@@ -75,6 +82,16 @@ public class GameScreen implements Screen {
 		agrFall.height = 64;
 		agrfalls.add(agrFall);
 		lastFallTime = TimeUtils.nanoTime();
+	}
+
+	private void spawnShootSh() {
+		Rectangle shootSh = new Rectangle();
+		shootSh.x = ship.x;
+		shootSh.y = ship.y;
+		shootSh.width = 32;
+		shootSh.height = 10;
+		shootsSh.add(shootSh);
+		lastShootTime = TimeUtils.nanoTime();
 	}
 
 	@Override
@@ -104,6 +121,10 @@ public class GameScreen implements Screen {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
 		}
 
+		for (Rectangle shootSh : shootsSh) {
+			game.batch.draw(bullet, shootSh.x + 27, shootSh.y);
+		}
+
 		game.batch.end();
 
 		if (Gdx.input.isTouched()) {
@@ -127,6 +148,7 @@ public class GameScreen implements Screen {
 		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
+		if (TimeUtils.nanoTime() - lastShootTime > 1000000000) spawnShootSh();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
@@ -139,35 +161,47 @@ public class GameScreen implements Screen {
 
 			}
 
-			if (agrFall.overlaps(ship)) {
-				bahAgressor++;//счетчик уничтоженных
-				bah.play();
 
-				rankMath = bahAgressor - nobahAgressor;
+			Iterator<Rectangle> iter1 = shootsSh.iterator();
+			while (iter1.hasNext()) {
+				Rectangle shootSh = iter1.next();
+				shootSh.y += 300 * Gdx.graphics.getDeltaTime();
+				if (shootSh.y + 10 < 0) {
+					iter1.remove();
+				}
 
-				if (rankMath < 5){
-					rank = "Soldier";
+				if (agrFall.overlaps(shootSh)) {
+					iter1.remove();
+					bahAgressor++;//счетчик уничтоженных
+					bah.play();
+
+					rankMath = bahAgressor - nobahAgressor;
+
+					if (rankMath < 5) {
+						rank = "Soldier";
+					}
+					if (rankMath >= 5 && rankMath < 10) {
+						rank = "Sergeant";
+					}
+					if (rankMath >= 10 && rankMath < 20) {
+						rank = "Lieutenant";
+					}
+					if (rankMath >= 20 && rankMath < 30) {
+						rank = "Captain";
+					}
+					if (rankMath >= 30 && rankMath < 40) {
+						rank = "Col.";
+					}
+					if (rankMath >= 40 && rankMath < 50) {
+						rank = "General";
+					}
+					if (rankMath >= 50) {
+						rank = "Admiral";
+					}
+					iter.remove();
 				}
-				if (rankMath >= 5 && rankMath < 10) {
-					rank = "Sergeant";
-				}
-				if (rankMath >= 10 && rankMath < 20) {
-					rank = "Lieutenant";
-				}
-				if (rankMath >= 20 && rankMath < 30) {
-					rank = "Captain";
-				}
-				if (rankMath >= 30 && rankMath < 40) {
-					rank = "Col.";
-				}
-				if (rankMath >= 40 && rankMath < 50) {
-					rank = "General";
-				}
-				if (rankMath >= 50) {
-					rank = "Admiral";
-				}
-				iter.remove();
 			}
+
 		}
 
 	}
@@ -194,9 +228,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-
 		agrImage.dispose();
 		ship1Image.dispose();
 		bah.dispose();
+		bullet.dispose();
 	}
 }
