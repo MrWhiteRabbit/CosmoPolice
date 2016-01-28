@@ -42,7 +42,6 @@ public class MainMenuScreen implements Screen{
         game.batch.begin();
         game.batch.draw(stScr, camera.position.x - camera.viewportWidth / 2, 0);
        // zast.play();
-
         game.batch.end();
 
         if (Gdx.input.isTouched()){
