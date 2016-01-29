@@ -35,12 +35,11 @@ public class GameScreen implements Screen {
 	long lastFallTime;
 	long lastShootTime;
 	Sound bah;
-	String rank;
 	int bahAgressor;
 	int nobahAgressor;
 	int rankMath;
 	int speedFall;
-	int speedShoot;
+
 
 
 	public GameScreen(final Cosmos gam) {
@@ -95,33 +94,6 @@ public class GameScreen implements Screen {
 		lastShootTime = TimeUtils.nanoTime();
 	}
 
-	public void weaponMode() {
-		//bahAgressor = 0;
-		//nobahAgressor = 0;
-		//rankMath = bahAgressor - nobahAgressor;
-		if (rankMath < 5) {
-			speedShoot = 100;
-		}
-		if (rankMath >= 5 && rankMath < 10) {
-			speedShoot = 200;
-		}
-		if (rankMath >= 10 && rankMath < 20) {
-			speedShoot = 300;
-		}
-		if (rankMath >= 20 && rankMath < 30) {
-			speedShoot = 400;
-		}
-		if (rankMath >= 30 && rankMath < 40) {
-			speedShoot = 500;
-		}
-		if (rankMath >= 40 && rankMath < 50) {
-			speedShoot = 600;
-		}
-		if (rankMath >= 50) {
-			speedShoot = 700;
-		}
-	}
-
 	@Override
 	public void show() {
 
@@ -134,6 +106,14 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+		WeaponMode a = new WeaponMode();
+		WeaponMode b = new WeaponMode();
+		String sRank = b.getRank();
+		int sShoot = a.getSpeedShoot();
+
+
+	//	WeaponMode simplyGun = new WeaponMode();
+	//	WeaponMode pol = new WeaponMode();
 
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
@@ -143,8 +123,8 @@ public class GameScreen implements Screen {
 
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
 		game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
-		game.font.draw(game.batch, "Rank: " + rank, 20, 740);
-		game.font.draw(game.batch, "Weapon power: " + (speedShoot / 100), 20, 720);
+		game.font.draw(game.batch, "Rank: " + sRank, 20, 740);
+		game.font.draw(game.batch, "Weapon power: " + sShoot / 100, 20, 720);
 
 		for (Rectangle agrFall : agrfalls) {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
@@ -192,8 +172,8 @@ public class GameScreen implements Screen {
 		Iterator<Rectangle> iter1 = shootsSh.iterator();
 		while (iter1.hasNext()) {
 
-				Rectangle shootSh = iter1.next();
-				shootSh.y += /*speedShoot*/ 300 * Gdx.graphics.getDeltaTime();
+			Rectangle shootSh = iter1.next();
+				shootSh.y += /*sShoot*/300 * Gdx.graphics.getDeltaTime();
 				if (shootSh.y + 10 < 0) {
 					iter1.remove();
 				}
@@ -204,29 +184,6 @@ public class GameScreen implements Screen {
 					bah.play();
 					iter.remove();
 					rankMath = bahAgressor - nobahAgressor;
-
-					if (rankMath < 5) {
-						rank = "Soldier";
-					}
-					if (rankMath >= 5 && rankMath < 10) {
-						rank = "Sergeant";
-					}
-					if (rankMath >= 10 && rankMath < 20) {
-						rank = "Lieutenant";
-					}
-					if (rankMath >= 20 && rankMath < 30) {
-						rank = "Captain";
-					}
-					if (rankMath >= 30 && rankMath < 40) {
-						rank = "Col.";
-					}
-					if (rankMath >= 40 && rankMath < 50) {
-						rank = "General";
-					}
-					if (rankMath >= 50) {
-						rank = "Admiral";
-					}
-
 				}
 
 			}
