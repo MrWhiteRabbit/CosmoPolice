@@ -45,6 +45,7 @@ public class GameScreen implements Screen {
 	public GameScreen(final Cosmos gam) {
 		this.game = gam;
 
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 480, 800);
 
@@ -106,14 +107,12 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
-		WeaponMode a = new WeaponMode();
-		WeaponMode b = new WeaponMode();
-		String sRank = b.getRank();
-		int sShoot = a.getSpeedShoot();
 
-
-	//	WeaponMode simplyGun = new WeaponMode();
-	//	WeaponMode pol = new WeaponMode();
+		// Получаем данные о скорости полета снаряда и звании из класса WeaponMode
+		WeaponMode gR = new WeaponMode();
+		WeaponMode gS = new WeaponMode();
+		String sRank = gR.getRank();
+		int sShoot = gS.getSpeedShoot();
 
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
@@ -157,7 +156,7 @@ public class GameScreen implements Screen {
 		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
-		if (TimeUtils.nanoTime() - lastShootTime > 1000000000) spawnShootSh();
+		if (TimeUtils.nanoTime() - lastShootTime > 800000000) spawnShootSh();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
@@ -167,6 +166,7 @@ public class GameScreen implements Screen {
 			if (agrFall.y + 64 < 0) {
 				iter.remove();
 				nobahAgressor++; //увеличиваем счетчик пропущенных
+				rankMath = bahAgressor - nobahAgressor;
 
 			}
 		Iterator<Rectangle> iter1 = shootsSh.iterator();
