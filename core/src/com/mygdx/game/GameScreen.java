@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +23,7 @@ public class GameScreen implements Screen {
 	final Cosmos game;
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	Texture ship1Image;
+	Texture shipImage;
 	Texture agrImage;
 	Texture bG;
 	Texture bullet;
@@ -38,13 +37,11 @@ public class GameScreen implements Screen {
 	int bahAgressor;
 	int nobahAgressor;
 	int rankMath;
-	int speedFall;
-
-
+	int speedShoot;
+	String rank;
 
 	public GameScreen(final Cosmos gam) {
 		this.game = gam;
-
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 480, 800);
@@ -53,7 +50,7 @@ public class GameScreen implements Screen {
 
 		batch = new SpriteBatch();
 
-		ship1Image = new Texture("ship.png");
+		shipImage = new Texture("ship.png");
 		agrImage = new Texture("agr.png");
 		bG = new Texture("bg.jpg");
 		bullet = new Texture("bullet.png");
@@ -71,7 +68,6 @@ public class GameScreen implements Screen {
 
 		shootsSh = new Array<Rectangle>();
 		spawnShootSh();
-
 
 	}
 
@@ -108,9 +104,9 @@ public class GameScreen implements Screen {
 
 		camera.update();
 
-		// Получаем данные о скорости полета снаряда и звании из класса WeaponMode
-		WeaponMode gR = new WeaponMode();
-		WeaponMode gS = new WeaponMode();
+		// Получаем данные о скорости полета снаряда и звании из класса GameLogic
+		GameLogic gR = new GameLogic();
+		GameLogic gS = new GameLogic();
 		String sRank = gR.getRank();
 		int sShoot = gS.getSpeedShoot();
 
@@ -118,12 +114,12 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 
 		game.batch.draw(bG, camera.position.x - camera.viewportWidth / 2, 0);
-		game.batch.draw(ship1Image, ship.x, ship.y);
+		game.batch.draw(shipImage, ship.x, ship.y);
 
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
 		game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
-		game.font.draw(game.batch, "Rank: " + sRank, 20, 740);
-		game.font.draw(game.batch, "Weapon power: " + sShoot / 100, 20, 720);
+		game.font.draw(game.batch, "Rank: " + rank, 20, 740);
+		game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 720);
 
 		for (Rectangle agrFall : agrfalls) {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
@@ -160,9 +156,9 @@ public class GameScreen implements Screen {
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
-			speedFall = MathUtils.random(0, 400);
+
 			Rectangle agrFall = iter.next();
-			agrFall.y -= speedFall * Gdx.graphics.getDeltaTime();
+			agrFall.y -= 200 * Gdx.graphics.getDeltaTime();
 			if (agrFall.y + 64 < 0) {
 				iter.remove();
 				nobahAgressor++; //увеличиваем счетчик пропущенных
@@ -173,9 +169,28 @@ public class GameScreen implements Screen {
 		while (iter1.hasNext()) {
 
 			Rectangle shootSh = iter1.next();
-				shootSh.y += /*sShoot*/300 * Gdx.graphics.getDeltaTime();
+				shootSh.y += speedShoot * Gdx.graphics.getDeltaTime();
 				if (shootSh.y + 10 < 0) {
 					iter1.remove();
+					rankMath = bahAgressor - nobahAgressor;
+
+					if (rankMath < 5) speedShoot = 100;
+					if (rankMath >= 5 && rankMath < 10)	speedShoot = 200;
+					if (rankMath >= 10 && rankMath < 20) speedShoot = 300;
+					if (rankMath >= 20 && rankMath < 30) speedShoot = 400;
+					if (rankMath >= 30 && rankMath < 40) speedShoot = 500;
+					if (rankMath >= 40 && rankMath < 50) speedShoot = 600;
+					if (rankMath >= 50) speedShoot = 700;
+
+					if (rankMath < 5) rank = "Soldier";
+					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
+					if (rankMath >= 10 && rankMath < 20) rank = "Lieutenant";
+					if (rankMath >= 20 && rankMath < 30) rank = "Captain";
+					if (rankMath >= 30 && rankMath < 40) rank = "Major";
+					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
+					if (rankMath >= 50) rank = "General";
+
+
 				}
 
 				if (agrFall.overlaps(shootSh)) {
@@ -183,7 +198,24 @@ public class GameScreen implements Screen {
 					bahAgressor++;//счетчик уничтоженных
 					bah.play();
 					iter.remove();
-					rankMath = bahAgressor - nobahAgressor;
+				 	rankMath = bahAgressor - nobahAgressor;
+
+					if (rankMath < 5) speedShoot = 100;
+					if (rankMath >= 5 && rankMath < 10)	speedShoot = 200;
+					if (rankMath >= 10 && rankMath < 20) speedShoot = 300;
+					if (rankMath >= 20 && rankMath < 30) speedShoot = 400;
+					if (rankMath >= 30 && rankMath < 40) speedShoot = 500;
+					if (rankMath >= 40 && rankMath < 50) speedShoot = 600;
+					if (rankMath >= 50) speedShoot = 700;
+
+					if (rankMath < 5) rank = "Soldier";
+					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
+					if (rankMath >= 10 && rankMath < 20) rank = "Lieutenant";
+					if (rankMath >= 20 && rankMath < 30) rank = "Captain";
+					if (rankMath >= 30 && rankMath < 40) rank = "Major";
+					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
+					if (rankMath >= 50) rank = "General";
+
 				}
 
 			}
@@ -215,7 +247,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		agrImage.dispose();
-		ship1Image.dispose();
+		shipImage.dispose();
 		bah.dispose();
 		bullet.dispose();
 	}
