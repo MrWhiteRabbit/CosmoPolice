@@ -33,13 +33,13 @@ public class GameOverScreen implements Screen{
         Gdx.gl.glClearColor(0, 0, 0, 1);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Texture stScr = new Texture("StartScreen.jpg");
+        Texture goScr = new Texture("GameOverScreen.jpg");
 
         camera.update();
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.batch.draw(stScr, camera.position.x - camera.viewportWidth / 2, 0);
+        game.batch.draw(goScr, camera.position.x - camera.viewportWidth / 2, 0);
 
         game.batch.end();
 
