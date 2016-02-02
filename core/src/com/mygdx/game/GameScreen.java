@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -37,7 +36,7 @@ public class GameScreen implements Screen {
 	int bahAgressor;
 	int nobahAgressor;
 	int rankMath;
-	int speedShoot;
+	int speedShoot = 50; //начальная скорость полета снарядов
 	String rank;
 
 	public GameScreen(final Cosmos gam) {
@@ -104,12 +103,6 @@ public class GameScreen implements Screen {
 
 		camera.update();
 
-		// Получаем данные о скорости полета снаряда и звании из класса GameLogic
-		GameLogic gR = new GameLogic();
-		GameLogic gS = new GameLogic();
-		String sRank = gR.getRank();
-		int sShoot = gS.getSpeedShoot();
-
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
 
@@ -152,19 +145,21 @@ public class GameScreen implements Screen {
 		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
-		if (TimeUtils.nanoTime() - lastShootTime > 800000000) spawnShootSh();
+		if (TimeUtils.nanoTime() - lastShootTime > 500000000) spawnShootSh();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
 
 			Rectangle agrFall = iter.next();
-			agrFall.y -= 200 * Gdx.graphics.getDeltaTime();
+			agrFall.y -= speedShoot * Gdx.graphics.getDeltaTime();
 			if (agrFall.y + 64 < 0) {
 				iter.remove();
 				nobahAgressor++; //увеличиваем счетчик пропущенных
 				rankMath = bahAgressor - nobahAgressor;
 
 			}
+
+		//механизм выстрела
 		Iterator<Rectangle> iter1 = shootsSh.iterator();
 		while (iter1.hasNext()) {
 
@@ -174,13 +169,13 @@ public class GameScreen implements Screen {
 					iter1.remove();
 					rankMath = bahAgressor - nobahAgressor;
 
-					if (rankMath < 5) speedShoot = 100;
-					if (rankMath >= 5 && rankMath < 10)	speedShoot = 200;
-					if (rankMath >= 10 && rankMath < 20) speedShoot = 300;
-					if (rankMath >= 20 && rankMath < 30) speedShoot = 400;
-					if (rankMath >= 30 && rankMath < 40) speedShoot = 500;
-					if (rankMath >= 40 && rankMath < 50) speedShoot = 600;
-					if (rankMath >= 50) speedShoot = 700;
+					if (rankMath < 5) speedShoot = 50;
+					if (rankMath >= 5 && rankMath < 10)	speedShoot = 100;
+					if (rankMath >= 10 && rankMath < 20) speedShoot = 200;
+					if (rankMath >= 20 && rankMath < 30) speedShoot = 300;
+					if (rankMath >= 30 && rankMath < 40) speedShoot = 400;
+					if (rankMath >= 40 && rankMath < 50) speedShoot = 500;
+					if (rankMath >= 50) speedShoot = 600;
 
 					if (rankMath < 5) rank = "Soldier";
 					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
@@ -189,10 +184,9 @@ public class GameScreen implements Screen {
 					if (rankMath >= 30 && rankMath < 40) rank = "Major";
 					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
 					if (rankMath >= 50) rank = "General";
-
-
 				}
 
+				//механизм попадения
 				if (agrFall.overlaps(shootSh)) {
 					iter1.remove();
 					bahAgressor++;//счетчик уничтоженных
@@ -200,13 +194,13 @@ public class GameScreen implements Screen {
 					iter.remove();
 				 	rankMath = bahAgressor - nobahAgressor;
 
-					if (rankMath < 5) speedShoot = 100;
-					if (rankMath >= 5 && rankMath < 10)	speedShoot = 200;
-					if (rankMath >= 10 && rankMath < 20) speedShoot = 300;
-					if (rankMath >= 20 && rankMath < 30) speedShoot = 400;
-					if (rankMath >= 30 && rankMath < 40) speedShoot = 500;
-					if (rankMath >= 40 && rankMath < 50) speedShoot = 600;
-					if (rankMath >= 50) speedShoot = 700;
+					if (rankMath < 5) speedShoot = 50;
+					if (rankMath >= 5 && rankMath < 10)	speedShoot = 100;
+					if (rankMath >= 10 && rankMath < 20) speedShoot = 200;
+					if (rankMath >= 20 && rankMath < 30) speedShoot = 300;
+					if (rankMath >= 30 && rankMath < 40) speedShoot = 400;
+					if (rankMath >= 40 && rankMath < 50) speedShoot = 500;
+					if (rankMath >= 50) speedShoot = 600;
 
 					if (rankMath < 5) rank = "Soldier";
 					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
@@ -215,7 +209,6 @@ public class GameScreen implements Screen {
 					if (rankMath >= 30 && rankMath < 40) rank = "Major";
 					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
 					if (rankMath >= 50) rank = "General";
-
 				}
 
 			}
