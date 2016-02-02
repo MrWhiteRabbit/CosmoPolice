@@ -45,12 +45,17 @@ public class GameOverScreen implements Screen{
         game.batch.draw(goScr, camera.position.x - camera.viewportWidth / 2, 0);
         //game.font.draw(game.batch, "Your SCORE: " + bahAgressor, 20, 780);
 
+        try {
+            sleep(1000);
+        } catch (InterruptedException ie){}
+
         game.batch.end();
 
         if (Gdx.input.isTouched()){
             try {
-                sleep(3000);
+                sleep(1000);
             } catch (InterruptedException ie){}
+
             game.setScreen(new GameScreen(game));
             dispose();
         }
