@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
 	int rankMath;
 	int speedShoot = 50; //начальная скорость полета снарядов
 	String rank;
+	long popul = 1000000;
 
 	public GameScreen(final Cosmos gam) {
 		this.game = gam;
@@ -110,9 +111,10 @@ public class GameScreen implements Screen {
 		game.batch.draw(shipImage, ship.x, ship.y);
 
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
-		game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
-		game.font.draw(game.batch, "Rank: " + rank, 20, 740);
-		game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 720);
+		//game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
+		game.font.draw(game.batch, "Rank: " + rank, 20, 760);
+		game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 740);
+		game.font.draw(game.batch, "Population: " + popul, 20, 720);
 
 		for (Rectangle agrFall : agrfalls) {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
@@ -145,7 +147,7 @@ public class GameScreen implements Screen {
 		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
-		if (TimeUtils.nanoTime() - lastShootTime > 500000000) spawnShootSh();
+		if (TimeUtils.nanoTime() - lastShootTime > 750000000) spawnShootSh();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
@@ -155,6 +157,7 @@ public class GameScreen implements Screen {
 			if (agrFall.y + 64 < 0) {
 				iter.remove();
 				nobahAgressor++; //увеличиваем счетчик пропущенных
+				popul = popul - 500000;
 				rankMath = bahAgressor - nobahAgressor;
 
 			}
@@ -186,10 +189,11 @@ public class GameScreen implements Screen {
 					if (rankMath >= 50) rank = "General";
 				}
 
-				//механизм попадения
+				//механизм попадания
 				if (agrFall.overlaps(shootSh)) {
 					iter1.remove();
 					bahAgressor++;//счетчик уничтоженных
+					popul = popul + 50000;
 					bah.play();
 					iter.remove();
 				 	rankMath = bahAgressor - nobahAgressor;
@@ -215,6 +219,10 @@ public class GameScreen implements Screen {
 
 		}
 
+		if (popul <= 0){
+			game.setScreen(new GameOverScreen(game));
+			dispose();
+		}
 	}
 
 	@Override
