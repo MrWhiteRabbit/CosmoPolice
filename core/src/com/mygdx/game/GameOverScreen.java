@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
+import static java.lang.Thread.*;
+
 public class GameOverScreen implements Screen{
 
     final Cosmos game;
@@ -18,6 +20,7 @@ public class GameOverScreen implements Screen{
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
+
 
 
     }
@@ -40,10 +43,14 @@ public class GameOverScreen implements Screen{
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(goScr, camera.position.x - camera.viewportWidth / 2, 0);
+        //game.font.draw(game.batch, "Your SCORE: " + bahAgressor, 20, 780);
 
         game.batch.end();
 
         if (Gdx.input.isTouched()){
+            try {
+                sleep(3000);
+            } catch (InterruptedException ie){}
             game.setScreen(new GameScreen(game));
             dispose();
         }

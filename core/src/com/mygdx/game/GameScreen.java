@@ -40,6 +40,7 @@ public class GameScreen implements Screen {
 	String rank;
 	long popul = 1000000;
 
+
 	public GameScreen(final Cosmos gam) {
 		this.game = gam;
 
@@ -70,6 +71,7 @@ public class GameScreen implements Screen {
 		spawnShootSh();
 
 	}
+
 
 	private void spawnAgrFall() {
 		Rectangle agrFall = new Rectangle();
@@ -113,8 +115,8 @@ public class GameScreen implements Screen {
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
 		//game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
 		game.font.draw(game.batch, "Rank: " + rank, 20, 760);
-		game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 740);
-		game.font.draw(game.batch, "Population: " + popul, 20, 720);
+		//game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 740);
+		game.font.draw(game.batch, "Population: " + popul, 20, 740);
 
 		for (Rectangle agrFall : agrfalls) {
 			game.batch.draw(agrImage, agrFall.x, agrFall.y);
