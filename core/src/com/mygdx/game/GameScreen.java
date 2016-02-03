@@ -3,17 +3,17 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Array;
-
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+
 import java.util.Iterator;
 
 
@@ -33,12 +33,16 @@ public class GameScreen implements Screen {
 	long lastFallTime;
 	long lastShootTime;
 	Sound bah;
+	Sound fanfar;
+	Sound shoot;
+	Sound startSound;
 	int bahAgressor;
 	int nobahAgressor;
 	int rankMath;
 	int speedShoot = 50; //начальная скорость полета снарядов
 	String rank;
 	long popul = 1000000;
+
 
 
 	public GameScreen(final Cosmos gam) {
@@ -57,7 +61,10 @@ public class GameScreen implements Screen {
 		bullet = new Texture("bullet.png");
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
-
+		fanfar = Gdx.audio.newSound(Gdx.files.internal("fanfar.mp3"));
+		//shoot = Gdx.audio.newSound(Gdx.files.internal("shoot.mp3"));
+		startSound = Gdx.audio.newSound(Gdx.files.internal("startsound.mp3"));
+		startSound.play();
 		ship = new Rectangle();
 		ship.x = 480 / 2 - 64 / 2;
 		ship.y = 20;
@@ -69,6 +76,8 @@ public class GameScreen implements Screen {
 
 		shootsSh = new Array<Rectangle>();
 		spawnShootSh();
+
+
 
 	}
 
@@ -87,7 +96,7 @@ public class GameScreen implements Screen {
 		Rectangle shootSh = new Rectangle();
 		shootSh.x = ship.x;
 		shootSh.y = ship.y;
-		shootSh.width = 32;
+		shootSh.width = 64;
 		shootSh.height = 5;
 		shootsSh.add(shootSh);
 		lastShootTime = TimeUtils.nanoTime();
@@ -100,6 +109,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -113,9 +123,7 @@ public class GameScreen implements Screen {
 		game.batch.draw(shipImage, ship.x, ship.y);
 
 		game.font.draw(game.batch, "Kills: " + bahAgressor, 20, 780);
-		//game.font.draw(game.batch, "Attack: " + nobahAgressor, 20, 760);
 		game.font.draw(game.batch, "Rank: " + rank, 20, 760);
-		//game.font.draw(game.batch, "Weapon power: " + speedShoot / 100, 20, 740);
 		game.font.draw(game.batch, "Population: " + popul, 20, 740);
 
 		for (Rectangle agrFall : agrfalls) {
@@ -123,7 +131,7 @@ public class GameScreen implements Screen {
 		}
 
 		for (Rectangle shootSh : shootsSh) {
-			game.batch.draw(bullet, shootSh.x + 27, shootSh.y);
+			game.batch.draw(bullet, shootSh.x, shootSh.y + 64);
 		}
 
 		game.batch.end();
@@ -149,7 +157,7 @@ public class GameScreen implements Screen {
 		if (ship.y > 336) ship.y = 400 - 64;
 
 		if (TimeUtils.nanoTime() - lastFallTime > 1000000000) spawnAgrFall();
-		if (TimeUtils.nanoTime() - lastShootTime > 750000000) spawnShootSh();
+		if (TimeUtils.nanoTime() - lastShootTime > 600000000) spawnShootSh();
 
 		Iterator<Rectangle> iter = agrfalls.iterator();
 		while (iter.hasNext()) {
@@ -180,7 +188,8 @@ public class GameScreen implements Screen {
 					if (rankMath >= 20 && rankMath < 30) speedShoot = 300;
 					if (rankMath >= 30 && rankMath < 40) speedShoot = 400;
 					if (rankMath >= 40 && rankMath < 50) speedShoot = 500;
-					if (rankMath >= 50) speedShoot = 600;
+					if (rankMath >= 50 && rankMath < 150) speedShoot = 600;
+					if (rankMath > 150) speedShoot = 700;
 
 					if (rankMath < 5) rank = "Soldier";
 					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
@@ -188,7 +197,8 @@ public class GameScreen implements Screen {
 					if (rankMath >= 20 && rankMath < 30) rank = "Captain";
 					if (rankMath >= 30 && rankMath < 40) rank = "Major";
 					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
-					if (rankMath >= 50) rank = "General";
+					if (rankMath >= 50 && rankMath < 150) rank = "General";
+					if (rankMath > 150) rank = "Admiral";
 				}
 
 				//механизм попадания
@@ -209,12 +219,37 @@ public class GameScreen implements Screen {
 					if (rankMath >= 50) speedShoot = 600;
 
 					if (rankMath < 5) rank = "Soldier";
-					if (rankMath >= 5 && rankMath < 10)	rank = "Sergeant";
-					if (rankMath >= 10 && rankMath < 20) rank = "Lieutenant";
-					if (rankMath >= 20 && rankMath < 30) rank = "Captain";
-					if (rankMath >= 30 && rankMath < 40) rank = "Major";
-					if (rankMath >= 40 && rankMath < 50) rank = "Col.";
-					if (rankMath >= 50) rank = "General";
+					if (rankMath >= 5 && rankMath < 10)	{
+						if (rankMath == 5) fanfar.play();
+						shipImage = new Texture("ship2.png");
+						rank = "Sergeant";
+					}
+					if (rankMath >= 10 && rankMath < 20) {
+						if (rankMath == 10) fanfar.play();
+						rank = "Lieutenant";
+					}
+					if (rankMath >= 20 && rankMath < 30) {
+						if (rankMath == 20) fanfar.play();
+						bullet = new Texture("bullet2.png");
+						rank = "Captain";
+					}
+					if (rankMath >= 30 && rankMath < 40) {
+						if (rankMath == 30) fanfar.play();
+						rank = "Major";
+					}
+					if (rankMath >= 40 && rankMath < 50) {
+						bullet = new Texture("bullet3.png");
+						if (rankMath == 40) fanfar.play();
+						rank = "Col.";
+					}
+					if (rankMath >= 50 && rankMath < 150) {
+						if (rankMath == 50) fanfar.play();
+						rank = "General";
+					}
+					if (rankMath > 150) {
+						if (rankMath == 150) fanfar.play();
+						rank = "Admiral";
+					}
 				}
 
 			}
@@ -222,6 +257,7 @@ public class GameScreen implements Screen {
 		}
 
 		if (popul <= 0){
+
 			game.setScreen(new GameOverScreen(game));
 			dispose();
 		}
@@ -252,6 +288,9 @@ public class GameScreen implements Screen {
 		agrImage.dispose();
 		shipImage.dispose();
 		bah.dispose();
+		fanfar.dispose();
 		bullet.dispose();
+		shoot.dispose();
+		startSound.dispose();
 	}
 }
