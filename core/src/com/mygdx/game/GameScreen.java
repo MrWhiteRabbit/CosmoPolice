@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
 	long lastFallTime;
 	long lastShootTime;
 	Sound bah;
-	Sound fanfar;
+	Sound fanFar;
 	Sound shoot;
 	Sound startSound;
 	int bahAgressor;
@@ -61,10 +61,9 @@ public class GameScreen implements Screen {
 		bullet = new Texture("bullet.png");
 
 		bah = Gdx.audio.newSound(Gdx.files.internal("bah.mp3"));
-		fanfar = Gdx.audio.newSound(Gdx.files.internal("fanfar.mp3"));
-		//shoot = Gdx.audio.newSound(Gdx.files.internal("shoot.mp3"));
+		fanFar = Gdx.audio.newSound(Gdx.files.internal("fanfar.mp3"));
 		startSound = Gdx.audio.newSound(Gdx.files.internal("startsound.mp3"));
-		startSound.play();
+
 		ship = new Rectangle();
 		ship.x = 480 / 2 - 64 / 2;
 		ship.y = 20;
@@ -77,7 +76,7 @@ public class GameScreen implements Screen {
 		shootsSh = new Array<Rectangle>();
 		spawnShootSh();
 
-
+		startSound.play();
 
 	}
 
@@ -115,6 +114,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+
 
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
@@ -220,34 +220,34 @@ public class GameScreen implements Screen {
 
 					if (rankMath < 5) rank = "Soldier";
 					if (rankMath >= 5 && rankMath < 10)	{
-						if (rankMath == 5) fanfar.play();
+						if (rankMath == 5) fanFar.play();
 						shipImage = new Texture("ship2.png");
 						rank = "Sergeant";
 					}
 					if (rankMath >= 10 && rankMath < 20) {
-						if (rankMath == 10) fanfar.play();
+						if (rankMath == 10) fanFar.play();
 						rank = "Lieutenant";
 					}
 					if (rankMath >= 20 && rankMath < 30) {
-						if (rankMath == 20) fanfar.play();
+						if (rankMath == 20) fanFar.play();
 						bullet = new Texture("bullet2.png");
 						rank = "Captain";
 					}
 					if (rankMath >= 30 && rankMath < 40) {
-						if (rankMath == 30) fanfar.play();
+						if (rankMath == 30) fanFar.play();
 						rank = "Major";
 					}
 					if (rankMath >= 40 && rankMath < 50) {
 						bullet = new Texture("bullet3.png");
-						if (rankMath == 40) fanfar.play();
+						if (rankMath == 40) fanFar.play();
 						rank = "Col.";
 					}
 					if (rankMath >= 50 && rankMath < 150) {
-						if (rankMath == 50) fanfar.play();
+						if (rankMath == 50) fanFar.play();
 						rank = "General";
 					}
 					if (rankMath > 150) {
-						if (rankMath == 150) fanfar.play();
+						if (rankMath == 150) fanFar.play();
 						rank = "Admiral";
 					}
 				}
@@ -288,7 +288,7 @@ public class GameScreen implements Screen {
 		agrImage.dispose();
 		shipImage.dispose();
 		bah.dispose();
-		fanfar.dispose();
+		fanFar.dispose();
 		bullet.dispose();
 		shoot.dispose();
 		startSound.dispose();
